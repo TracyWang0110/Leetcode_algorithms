@@ -1,48 +1,32 @@
 class ZigzagIterator:
     def __init__(self, v1: List[int], v2: List[int]):
-        self.row_index =0
-        self.col_index =0
-        self.vecs = [v1,v2]
-        self.non_empty_vec_cnt = len(self.vecs)
-        #遍历每一行
-        for i in range(len(self.vecs)):
-            if len(self.vecs[i]) ==0:
-                self.non_empty_vec_cnt -= 1
-        #非空行遍历，是不是还有下一个元素可以取遍历
+        self.queue = collections.deque()
+        vecs=[v1,v2]
+        #遍历K哥一维向量
+        for vec in vecs:
+            #如果为空，就不Push进queue
+            if vec:
+                #对于一个List，pop(),o(1),pop(n),o(n)
+                self.queue.appendleft(vec[::-1])
+        print (self.queue)
+
 
     def next(self) -> int:
-        #跳过所有已经终结的行，直周到下一个可以返回的行
-        while self.col_index >=len(self.vecs[self.row_index]):
-            self.row_index +=1
-            #如果已经到了末行，行回到0,列加1
-            if self.row_index == len(self.vecs):
-                #回到row_index 0 
-                self.row_index = 0
-                self.col_index +=1
-            
-        
-        
-        value = self.vecs[self.row_index][self.col_index]
-        #如果当前行已经遍历完，deactivate 
-        if self.col_index == len(self.vecs[self.row_index])-1:
-            self.non_empty_vec_cnt -=1
-        
-        #行+1
-        self.row_index  += 1
-        
-        #如果已经到了末行，行回到0，列加1
-        if self.row_index == len(self.vecs):
-            self.row_index = 0
-            self.col_index +=1
-            
-        return value
-        
-
+        # write your code here
+        #队首出队
+        vec = self.queue.pop()
+        #list最后一个元素
+        value = vec.pop()
+        print(value)
+        #list可能为空
+        if vec:
+            #非空
+            self.queue.appendleft(vec)
+        return value   
 
     def hasNext(self) -> bool:
         #不确保有下一个，是不是还有下一个
-        return self.non_empty_vec_cnt >0 
-        
+        return len(self.queue) >0 
 
 # Your ZigzagIterator object will be instantiated and called as such:
 # i, v = ZigzagIterator(v1, v2), []
